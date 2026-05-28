@@ -28,6 +28,7 @@ class Asteroide(BaseModel):
     distancia_lunar: float           # distância em "distâncias lunares" (1 = Terra-Lua)
     potencialmente_perigoso: bool    # flag oficial da NASA (is_potentially_hazardous)
 
-    # Campos preenchidos pela nossa "IA"/regra de classificação:
+    # Campos preenchidos pela nossa "IA"/análise:
     pontuacao_risco: Optional[int] = None   # 0 a 100
     nivel_risco: Optional[str] = None        # BAIXO / MEDIO / ALTO / CRITICO
+    anomalia: Optional[bool] = None          # risco estatisticamente atípico no lote

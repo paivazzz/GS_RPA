@@ -120,11 +120,32 @@ botão para disparar o robô na hora.
 
 ---
 
+## 🧪 Testes automatizados
+
+O projeto tem testes com **pytest** (qualidade de código):
+
+```bash
+poetry run pytest        # ou simplesmente:  python -m pytest
+```
+
+Eles validam a pontuação de risco, a classificação por nível e a detecção de anomalias.
+
+---
+
 ## 🔑 Sobre a chave da NASA
 
 O projeto usa a chave pública `DEMO_KEY` (funciona sem cadastro, com limite baixo).
-Para uso intenso, gere uma chave grátis em https://api.nasa.gov e troque o valor de
-`API_KEY` em `spacewatch/nasa_client.py`.
+Para uso intenso, gere uma chave grátis em https://api.nasa.gov e defina a **variável
+de ambiente** `NASA_API_KEY` (boa prática — não deixa a chave no código):
+
+```powershell
+# Windows (PowerShell)
+$env:NASA_API_KEY = "sua_chave_aqui"
+python main.py
+```
+
+Se a NASA estiver fora do ar ou bloquear por excesso de requisições, o robô **não quebra**:
+ele tenta novamente (retry automático) e registra tudo via `logging`.
 
 ---
 

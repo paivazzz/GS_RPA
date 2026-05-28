@@ -9,7 +9,11 @@ Isso é o "entregável" visual do RPA: um relatório pronto para a
 tomada de decisão.
 """
 
+import logging
+
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 # Nomes das colunas, na mesma ordem em que o Repository devolve as linhas.
 COLUNAS = [
@@ -25,6 +29,7 @@ COLUNAS = [
     "potencialmente_perigoso",
     "pontuacao_risco",
     "nivel_risco",
+    "anomalia",
 ]
 
 
@@ -39,7 +44,7 @@ def gerar_excel(linhas: list, caminho: str = "relatorio_asteroides.xlsx") -> str
     # Escreve no Excel sem a coluna de índice automática do pandas.
     df.to_excel(caminho, index=False, sheet_name="Asteroides")
 
-    print(f"[RELATORIO] Planilha gerada: {caminho} ({len(df)} asteroides)")
+    logger.info("Planilha gerada: %s (%d asteroides)", caminho, len(df))
     return caminho
 
 
@@ -47,5 +52,5 @@ def gerar_csv(linhas: list, caminho: str = "relatorio_asteroides.csv") -> str:
     """Versão alternativa em CSV (também vista em aula com pandas)."""
     df = pd.DataFrame(linhas, columns=COLUNAS)
     df.to_csv(caminho, index=False, encoding="utf-8")
-    print(f"[RELATORIO] CSV gerado: {caminho}")
+    logger.info("CSV gerado: %s", caminho)
     return caminho

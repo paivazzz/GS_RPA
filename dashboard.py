@@ -54,11 +54,12 @@ if filtro != "TODOS":
     df = df[df["nivel_risco"] == filtro]
 
 # ----- Indicadores (cards) -----
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Total de asteroides", len(df))
 col2.metric("Risco CRÍTICO", int((df["nivel_risco"] == "CRITICO").sum()))
 col3.metric("Risco ALTO", int((df["nivel_risco"] == "ALTO").sum()))
 col4.metric("Potencialmente perigosos", int(df["potencialmente_perigoso"].sum()))
+col5.metric("Anomalias 🚨", int(df["anomalia"].sum()))
 
 # ----- Gráfico: quantidade por nível de risco -----
 st.subheader("📊 Asteroides por nível de risco")
