@@ -1,0 +1,24 @@
+# Ambiente Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Poetry
+poetry.lock
+
+# Banco de dados e relatórios gerados pelo robô
+*.db
+*.xlsx
+*.csv
+
+# Logs
+*.log
+
+# Configurações de IDE / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

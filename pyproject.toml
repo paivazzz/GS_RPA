@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "spacewatch-rpa"
+version = "0.1.0"
+description = "Robô RPA que monitora asteroides próximos à Terra usando dados reais da NASA (GS 2026.1 - AI for RPA / FIAP)"
+authors = ["Aluno FIAP <ramosrp0926@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "spacewatch" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"      # consumo da REST API da NASA (Tópico 1)
+pandas = "^2.2.0"         # tratamento de dados e geração de Excel (Tópico de Arquivos)
+openpyxl = "^3.1.2"       # backend que o pandas usa para escrever .xlsx
+fastapi = "^0.110.0"      # API REST que serve os dados coletados (MVC)
+uvicorn = "^0.29.0"       # servidor que roda o FastAPI
+schedule = "^1.2.1"       # execução automática no Windows (Tópico 3 - Agendamento)
+streamlit = "^1.33.0"     # dashboard front-end (Disciplina 04 - Front End)
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
