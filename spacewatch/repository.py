@@ -8,17 +8,41 @@ ela usa o módulo sqlite3 (que já vem no Python) para fazer o CRUD
 
 Usamos placeholders (?) nas queries para evitar SQL Injection.
 
-MELHORIA: a tabela tem uma restrição UNIQUE(neo_id, data_aproximacao)
+MELHORIA 1: a tabela tem uma restrição UNIQUE(neo_id, data_aproximacao)
 e a inserção usa INSERT OR IGNORE. Assim o robô ACUMULA HISTÓRICO a
 cada execução, sem criar registros duplicados do mesmo asteroide.
+
+MELHORIA 2: cada operação abre e FECHA sua própria conexão (via context
+manager `with`). Isso evita vazamento de conexões e o erro de "thread"
+do SQLite quando o Repository é usado pelo FastAPI/Streamlit (que rodam
+em threads diferentes). É a forma correta de lidar com sqlite3.
 """
 
 import logging
 import sqlite3
+from contextlib import contextmanager
 
 from .models import Asteroide
 
 logger = logging.getLogger(__name__)
+
+# Colunas da tabela, na ordem em que são lidas/escritas. Centralizar aqui
+# evita repetir a lista de nomes em vários lugares (relatorio, api, dashboard).
+COLUNAS = [
+    "id",
+    "neo_id",
+    "nome",
+    "data_aproximacao",
+    "diametro_min_m",
+    "diametro_max_m",
+    "velocidade_kmh",
+    "distancia_km",
+    "distancia_lunar",
+    "potencialmente_perigoso",
+    "pontuacao_risco",
+    "nivel_risco",
+    "anomalia",
+]
 
 
 class Repository:
@@ -26,10 +50,22 @@ class Repository:
 
     def __init__(self, nome_do_banco: str = "spacewatch.db"):
         self.database_name = nome_do_banco
-        self.conexao = sqlite3.connect(nome_do_banco)
-        self.cursor = self.conexao.cursor()
         self.criar_tabela()
         logger.info("Banco de dados iniciado (%s).", nome_do_banco)
+
+    @contextmanager
+    def _conectar(self):
+        """Abre uma conexão, entrega para o bloco `with` e SEMPRE fecha no fim.
+
+        Usar um context manager garante que a conexão seja encerrada mesmo
+        que ocorra um erro no meio da operação (sem vazar conexões).
+        """
+        conexao = sqlite3.connect(self.database_name)
+        try:
+            yield conexao
+            conexao.commit()
+        finally:
+            conexao.close()
 
     def criar_tabela(self):
         """Cria a tabela de asteroides caso ela ainda não exista.
@@ -55,8 +91,8 @@ class Repository:
                 UNIQUE(neo_id, data_aproximacao)
             )
         """
-        self.cursor.execute(sql_create_table)
-        self.conexao.commit()
+        with self._conectar() as conexao:
+            conexao.execute(sql_create_table)
 
     # ---------- CREATE ----------
     def inserir_asteroide(self, asteroide: Asteroide) -> bool:
@@ -72,51 +108,46 @@ class Repository:
                 potencialmente_perigoso, pontuacao_risco, nivel_risco, anomalia
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        self.conexao = sqlite3.connect(self.database_name)
-        self.cursor = self.conexao.cursor()
-        self.cursor.execute(
-            sql_insert,
-            (
-                asteroide.neo_id,
-                asteroide.nome,
-                asteroide.data_aproximacao,
-                asteroide.diametro_min_m,
-                asteroide.diametro_max_m,
-                asteroide.velocidade_kmh,
-                asteroide.distancia_km,
-                asteroide.distancia_lunar,
-                int(asteroide.potencialmente_perigoso),
-                asteroide.pontuacao_risco,
-                asteroide.nivel_risco,
-                int(bool(asteroide.anomalia)),
-            ),
-        )
-        self.conexao.commit()
-        # rowcount = 1 quando inseriu de fato; 0 quando ignorou (já existia).
-        return self.cursor.rowcount == 1
+        with self._conectar() as conexao:
+            cursor = conexao.execute(
+                sql_insert,
+                (
+                    asteroide.neo_id,
+                    asteroide.nome,
+                    asteroide.data_aproximacao,
+                    asteroide.diametro_min_m,
+                    asteroide.diametro_max_m,
+                    asteroide.velocidade_kmh,
+                    asteroide.distancia_km,
+                    asteroide.distancia_lunar,
+                    int(asteroide.potencialmente_perigoso),
+                    asteroide.pontuacao_risco,
+                    asteroide.nivel_risco,
+                    int(bool(asteroide.anomalia)),
+                ),
+            )
+            # rowcount = 1 quando inseriu de fato; 0 quando ignorou (já existia).
+            return cursor.rowcount == 1
 
     # ---------- READ ----------
     def selecionar_asteroides(self) -> list:
         """Retorna todos os asteroides cadastrados, do maior risco para o menor."""
         sql_select = "SELECT * FROM asteroides ORDER BY pontuacao_risco DESC"
-        self.conexao = sqlite3.connect(self.database_name)
-        self.cursor = self.conexao.cursor()
-        self.cursor.execute(sql_select)
-        return self.cursor.fetchall()
+        with self._conectar() as conexao:
+            return conexao.execute(sql_select).fetchall()
 
     def selecionar_por_nivel(self, nivel: str) -> list:
         """Retorna apenas os asteroides de um nível de risco específico."""
-        sql_select = "SELECT * FROM asteroides WHERE nivel_risco = ?"
-        self.conexao = sqlite3.connect(self.database_name)
-        self.cursor = self.conexao.cursor()
-        self.cursor.execute(sql_select, (nivel,))
-        return self.cursor.fetchall()
+        sql_select = (
+            "SELECT * FROM asteroides WHERE nivel_risco = ? "
+            "ORDER BY pontuacao_risco DESC"
+        )
+        with self._conectar() as conexao:
+            return conexao.execute(sql_select, (nivel,)).fetchall()
 
     # ---------- DELETE ----------
     def limpar_tabela(self):
         """Apaga todos os registros (use só se quiser zerar o histórico)."""
-        self.conexao = sqlite3.connect(self.database_name)
-        self.cursor = self.conexao.cursor()
-        self.cursor.execute("DELETE FROM asteroides")
-        self.conexao.commit()
+        with self._conectar() as conexao:
+            conexao.execute("DELETE FROM asteroides")
         logger.info("Histórico apagado (tabela zerada).")

@@ -16,11 +16,21 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
-from .repository import Repository
+from .repository import COLUNAS, Repository
 from .rpa_bot import executar_monitoramento
 
 app = FastAPI(title="SpaceWatch RPA", version="0.1.0")
 banco = Repository()
+
+
+def _para_json(linhas: list) -> list[dict]:
+    """Converte as linhas (tuplas) do banco em dicionários nome->valor.
+
+    Sem isso, a API devolveria listas cruas (ex.: [1, "54016", ...]) e
+    quem consome não saberia qual valor é qual. Com os nomes das colunas
+    o JSON fica autoexplicativo — boa prática de API REST.
+    """
+    return [dict(zip(COLUNAS, linha)) for linha in linhas]
 
 # Libera o acesso de qualquer origem (útil para um dashboard front-end).
 app.add_middleware(
@@ -41,13 +51,13 @@ def raiz():
 @app.get("/asteroides")
 def listar_asteroides():
     """READ: lista todos os asteroides já coletados (ordenados por risco)."""
-    return banco.selecionar_asteroides()
+    return _para_json(banco.selecionar_asteroides())
 
 
 @app.get("/asteroides/{nivel}")
 def listar_por_nivel(nivel: str):
     """READ filtrado: ex. /asteroides/CRITICO ou /asteroides/ALTO."""
-    return banco.selecionar_por_nivel(nivel.upper())
+    return _para_json(banco.selecionar_por_nivel(nivel.upper()))
 
 
 @app.post("/executar")

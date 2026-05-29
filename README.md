@@ -21,17 +21,19 @@ sugeridos no desafio da GS).
 
 ## 🧩 Os 2+ tópicos do semestre que o projeto integra
 
-O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto usa **3**:
+O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto integra **4**:
 
-| Tópico do semestre | Onde aparece no código |
-|---|---|
-| **1. REST API** | `spacewatch/nasa_client.py` — consome a API pública da NASA (NeoWs) via HTTP GET. |
-| **2. Arquivos & Database (SQLite)** | `spacewatch/repository.py` — classe `Repository` com CRUD em SQLite + `relatorio.py` gera Excel/CSV com pandas. |
-| **3. Execução de scripts & Agendamento (cron)** | `spacewatch/agendamento.py` — agenda o robô para rodar todo dia às 08:00. |
+| # | Tópico do semestre | Onde aparece no código |
+|---|---|---|
+| **1** | **REST API** | `spacewatch/nasa_client.py` — consome a API pública da NASA (NeoWs) via HTTP GET, com retry e tratamento de erro. |
+| **2** | **Arquivos & Database (SQLite)** | `spacewatch/repository.py` — classe `Repository` com CRUD em SQLite + `relatorio.py` gera Excel/CSV com pandas. |
+| **3** | **Execução de scripts & Agendamento (cron)** | `spacewatch/agendamento.py` — agenda o robô para rodar todo dia às 08:00. |
+| **4** | **Front End (Disciplina 04)** | `dashboard.py` — dashboard em Streamlit com filtros, indicadores e gráficos. |
 
-Ainda usa **FastAPI (REST API + padrão MVC)** em `spacewatch/api.py` para servir os dados,
-exatamente como visto em aula, e um **dashboard em Streamlit** (`dashboard.py`) que adiciona
-o tópico de **Front End (Disciplina 04)** — totalizando **4 tópicos integrados**.
+Como camada extra, usa **FastAPI (REST API + padrão MVC)** em `spacewatch/api.py` para
+servir os dados em JSON, exatamente como visto em aula. A camada de **IA/análise de dados**
+fica em `spacewatch/classificador.py` (pontuação de risco 0–100 + detecção de anomalias
+estatística com pandas).
 
 ---
 
@@ -40,16 +42,20 @@ o tópico de **Front End (Disciplina 04)** — totalizando **4 tópicos integrad
 ```
 SpaceWatch-RPA/
 ├── main.py                 # roda o robô uma vez
+├── dashboard.py            # TÓPICO 4: front end (Streamlit)
 ├── pyproject.toml          # dependências (Poetry)
+├── requirements.txt        # dependências (caminho via pip)
 ├── spacewatch/
 │   ├── models.py           # MODEL: classe Asteroide (Pydantic BaseModel)
 │   ├── nasa_client.py      # TÓPICO 1: consumo da REST API da NASA
-│   ├── classificador.py    # IA/regra: calcula o risco (0 a 100)
-│   ├── repository.py        # TÓPICO 2: CRUD no banco SQLite
-│   ├── relatorio.py         # Arquivos: gera planilha Excel com pandas
-│   ├── rpa_bot.py           # O robô: integra todo o fluxo
-│   ├── agendamento.py       # TÓPICO 3: agendamento (cron / schedule)
-│   └── api.py               # CONTROLLER: API REST com FastAPI (MVC)
+│   ├── classificador.py    # IA/análise: risco (0 a 100) + anomalias
+│   ├── repository.py       # TÓPICO 2: CRUD no banco SQLite
+│   ├── relatorio.py        # Arquivos: gera planilha Excel/CSV com pandas
+│   ├── rpa_bot.py          # O robô: integra todo o fluxo
+│   ├── agendamento.py      # TÓPICO 3: agendamento (cron / schedule)
+│   └── api.py              # CONTROLLER: API REST com FastAPI (MVC)
+└── tests/
+    └── test_classificador.py   # testes automatizados (pytest)
 ```
 
 ---
@@ -69,7 +75,7 @@ poetry run python main.py
 ### Opção B — com pip (mais simples, se não tiver Poetry)
 
 ```bash
-pip install requests pandas openpyxl fastapi uvicorn schedule
+pip install -r requirements.txt
 python main.py
 ```
 

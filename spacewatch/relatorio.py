@@ -13,24 +13,12 @@ import logging
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
+# Fonte única dos nomes das colunas (definidos no Repository, na mesma
+# ordem em que o banco devolve as linhas). Reexportado aqui por
+# compatibilidade com quem já importava de relatorio.
+from .repository import COLUNAS
 
-# Nomes das colunas, na mesma ordem em que o Repository devolve as linhas.
-COLUNAS = [
-    "id",
-    "neo_id",
-    "nome",
-    "data_aproximacao",
-    "diametro_min_m",
-    "diametro_max_m",
-    "velocidade_kmh",
-    "distancia_km",
-    "distancia_lunar",
-    "potencialmente_perigoso",
-    "pontuacao_risco",
-    "nivel_risco",
-    "anomalia",
-]
+logger = logging.getLogger(__name__)
 
 
 def gerar_excel(linhas: list, caminho: str = "relatorio_asteroides.xlsx") -> str:
