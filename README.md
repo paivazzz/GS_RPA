@@ -51,9 +51,12 @@ ponta a ponta — a "integração de fluxos digitais" que o enunciado pede.
 ```
 SpaceWatch-RPA/
 ├── main.py                 # roda o robô uma vez
-├── dashboard.py            # front end / output (Streamlit)
+├── dashboard.py            # front end / output (Streamlit) — entrada multipágina
 ├── pyproject.toml          # dependências (Poetry)
 ├── requirements.txt        # dependências (caminho via pip)
+├── paginas/                # páginas do app Streamlit (st.navigation)
+│   ├── painel.py           # página do monitoramento (cards, gráficos, tabela)
+│   └── historico.py        # página da auditoria/rastreabilidade
 ├── spacewatch/
 │   ├── models.py           # MODEL: classe Asteroide (Pydantic BaseModel)
 │   ├── nasa_client.py      # TÓPICO 1: consumo da REST API da NASA
@@ -131,10 +134,15 @@ Expressão cron equivalente (Linux/servidor): `0 8 * * *`
 poetry run streamlit run dashboard.py
 ```
 
-Abre no navegador uma interface com filtros, indicadores e gráficos
-interativos (asteroides por nível de risco, distância x tamanho) e um
-botão para disparar o robô na hora. É a **carga de dados estruturados
-para o front-end** que a rubrica de "Entrega de Artefatos" valoriza.
+Abre no navegador um app com **duas páginas** (menu na lateral):
+
+- **🛰️ Painel** — filtros, indicadores e gráficos interativos (asteroides
+  por nível de risco, distância x tamanho) e um botão para disparar o robô
+  na hora. É a **carga de dados estruturados para o front-end** que a
+  rubrica de "Entrega de Artefatos" valoriza.
+- **📜 Histórico de uso** — página dedicada à auditoria (veja abaixo).
+
+Antes de tudo, é preciso **digitar o nome** na barra lateral (identificação).
 
 ---
 
