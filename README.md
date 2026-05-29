@@ -21,7 +21,7 @@ sugeridos no desafio da GS).
 
 ## 🧩 Os 2+ tópicos do semestre que o projeto integra
 
-O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto integra **4**:
+O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto integra **5**:
 
 | # | Tópico do semestre | Onde aparece no código |
 |---|---|---|
@@ -29,6 +29,7 @@ O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto integ
 | **2** | **Arquivos & Database (SQLite)** | `spacewatch/repository.py` — classe `Repository` com CRUD em SQLite + `relatorio.py` gera Excel/CSV com pandas. |
 | **3** | **Execução de scripts & Agendamento (cron)** | `spacewatch/agendamento.py` — agenda o robô para rodar todo dia às 08:00. |
 | **4** | **Front End (Disciplina 04)** | `dashboard.py` — dashboard em Streamlit com filtros, indicadores e gráficos. |
+| **5** | **Governança em IA (Disciplina 09)** | `spacewatch/auditoria.py` — exige identificação por nome e registra um **histórico auditável** de quem executou o robô e o que cada um consultou. |
 
 Como camada extra, usa **FastAPI (REST API + padrão MVC)** em `spacewatch/api.py` para
 servir os dados em JSON, exatamente como visto em aula. A camada de **IA/análise de dados**
@@ -53,9 +54,11 @@ SpaceWatch-RPA/
 │   ├── relatorio.py        # Arquivos: gera planilha Excel/CSV com pandas
 │   ├── rpa_bot.py          # O robô: integra todo o fluxo
 │   ├── agendamento.py      # TÓPICO 3: agendamento (cron / schedule)
+│   ├── auditoria.py        # TÓPICO 5: governança (histórico de uso)
 │   └── api.py              # CONTROLLER: API REST com FastAPI (MVC)
 └── tests/
-    └── test_classificador.py   # testes automatizados (pytest)
+    ├── test_classificador.py   # testes da IA/análise (pytest)
+    └── test_auditoria.py       # testes da governança/auditoria (pytest)
 ```
 
 ---
@@ -123,6 +126,22 @@ poetry run streamlit run dashboard.py
 Abre no navegador uma interface com filtros, indicadores e gráficos
 interativos (asteroides por nível de risco, distância x tamanho) e um
 botão para disparar o robô na hora.
+
+---
+
+## 🔒 Governança e rastreabilidade (Disciplina 09)
+
+Para usar o painel, a pessoa precisa **se identificar com o nome**. A partir
+daí, todo evento relevante é gravado num **histórico auditável** (tabela
+`auditoria` no mesmo SQLite):
+
+- quem **executou o robô** (e com quantos dias / quantos asteroides);
+- quem **consultou** os dados e qual **filtro** aplicou;
+- com **carimbo de data e hora** de cada ação.
+
+Basta clicar em **"📜 Ver histórico de uso"** no dashboard para ver tudo.
+Isso dá ao projeto a camada de **governança/rastreabilidade** que a
+Disciplina 09 (a integradora da GS) exige.
 
 ---
 
