@@ -1,14 +1,14 @@
 """
-DASHBOARD (Front End) — puxa o tópico da Disciplina 04 (Streamlit).
+DASHBOARD (front-end / output) em Streamlit.
 
 Interface visual que consome os dados que o robô coletou e salvou no
-SQLite, exibindo gráficos, filtros e uma tabela — exatamente o que o
-enunciado da Disciplina 04 pede: "componentes dinâmicos, gráficos
-interativos e filtros que facilitem a tomada de decisão".
+SQLite, exibindo gráficos, filtros e uma tabela. É a "carga de dados
+estruturados para o front-end" que a rubrica de "Entrega de Artefatos"
+de AI for RPA valoriza.
 
-GOVERNANÇA (Disciplina 09): o usuário precisa se identificar (nome) e
-toda ação relevante — executar o robô e consultar/filtrar — fica
-registrada em um histórico de auditoria, visível em um clique.
+RASTREABILIDADE: o usuário precisa se identificar (nome) e toda ação
+relevante — executar o robô e consultar/filtrar — fica registrada em um
+histórico de uso auditável, visível em um clique.
 
 Como rodar:
     poetry run streamlit run dashboard.py
@@ -38,7 +38,7 @@ def carregar_dados() -> pd.DataFrame:
     return pd.DataFrame(linhas, columns=COLUNAS)
 
 
-# ----- Identificação do usuário (GOVERNANÇA) -----
+# ----- Identificação do usuário (rastreabilidade) -----
 st.sidebar.header("👤 Identificação")
 usuario = st.sidebar.text_input("Seu nome", placeholder="Ex.: Maria Silva").strip()
 
@@ -112,11 +112,10 @@ st.scatter_chart(
 st.subheader("📋 Dados detalhados")
 st.dataframe(df, use_container_width=True)
 
-# ----- Histórico de uso (GOVERNANÇA / auditoria) -----
+# ----- Histórico de uso (rastreabilidade / auditoria) -----
 st.divider()
 st.subheader("📜 Histórico de uso (auditoria)")
-st.caption("Rastreabilidade: quem usou o painel, o que fez e quando "
-           "(Disciplina 09 — Governança em IA).")
+st.caption("Rastreabilidade do robô: quem usou o painel, o que fez e quando.")
 
 if st.button("📜 Ver histórico de uso"):
     eventos = auditoria.listar(limite=100)

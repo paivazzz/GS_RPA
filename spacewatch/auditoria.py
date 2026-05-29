@@ -1,11 +1,12 @@
 """
-GOVERNANÇA / RASTREABILIDADE (Disciplina 09 - Governança em IA & Business
-Analytics, a disciplina integradora da GS).
+RASTREABILIDADE / HISTÓRICO DE USO do robô.
 
-Toda ação relevante feita no dashboard fica registrada aqui: QUEM fez,
-O QUE fez, DETALHE e QUANDO. Isso dá auditoria/rastreabilidade ao robô —
-em um cenário real (monitoramento de risco de asteroides) é essencial
-saber quem disparou cada análise e o que cada pessoa consultou.
+Um robô de RPA bem-feito é AUDITÁVEL: precisa registrar quem o acionou e
+o que cada pessoa consultou. Toda ação relevante feita no dashboard fica
+registrada aqui: QUEM fez, O QUE fez, DETALHE e QUANDO. Em um cenário real
+(monitoramento de risco de asteroides) isso é essencial para saber quem
+disparou cada análise. Reforça o critério "Arquitetura de Fluxo e
+Engenharia de Software" da avaliação de AI for RPA.
 
 Segue o mesmo padrão Repository do resto do projeto (sqlite3 + context
 manager que abre/commita/fecha a conexão), gravando na mesma base

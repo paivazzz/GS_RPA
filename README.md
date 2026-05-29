@@ -19,22 +19,30 @@ sugeridos no desafio da GS).
 
 ---
 
-## 🧩 Os 2+ tópicos do semestre que o projeto integra
+## 🧩 Os grandes tópicos de AI for RPA que o projeto integra
 
-O enunciado exige combinar **pelo menos 2 grandes tópicos**. Este projeto integra **5**:
+O enunciado exige combinar **pelo menos 2 grandes tópicos** da disciplina.
+Este projeto integra **3** dos tópicos vistos em AI for RPA:
 
-| # | Tópico do semestre | Onde aparece no código |
+| # | Grande tópico (AI for RPA) | Onde aparece no código |
 |---|---|---|
-| **1** | **REST API** | `spacewatch/nasa_client.py` — consome a API pública da NASA (NeoWs) via HTTP GET, com retry e tratamento de erro. |
-| **2** | **Arquivos & Database (SQLite)** | `spacewatch/repository.py` — classe `Repository` com CRUD em SQLite + `relatorio.py` gera Excel/CSV com pandas. |
-| **3** | **Execução de scripts & Agendamento (cron)** | `spacewatch/agendamento.py` — agenda o robô para rodar todo dia às 08:00. |
-| **4** | **Front End (Disciplina 04)** | `dashboard.py` — dashboard em Streamlit com filtros, indicadores e gráficos. |
-| **5** | **Governança em IA (Disciplina 09)** | `spacewatch/auditoria.py` — exige identificação por nome e registra um **histórico auditável** de quem executou o robô e o que cada um consultou. |
+| **1** | **Consumo de REST API** | `spacewatch/nasa_client.py` — consome a API pública da NASA (NeoWs) via HTTP GET, com retry e tratamento de erro. |
+| **2** | **Arquivos & Database** | `spacewatch/repository.py` — classe `Repository` com CRUD em SQLite + `relatorio.py` gera Excel/CSV com pandas. |
+| **3** | **Execução de scripts & Agendamento** | `spacewatch/agendamento.py` — agenda o robô para rodar todo dia às 08:00 (cron / `schedule`). |
 
-Como camada extra, usa **FastAPI (REST API + padrão MVC)** em `spacewatch/api.py` para
-servir os dados em JSON, exatamente como visto em aula. A camada de **IA/análise de dados**
-fica em `spacewatch/classificador.py` (pontuação de risco 0–100 + detecção de anomalias
-estatística com pandas).
+Tudo é amarrado pelo robô (`spacewatch/rpa_bot.py`), que orquestra o fluxo de
+ponta a ponta — a "integração de fluxos digitais" que o enunciado pede.
+
+---
+
+## 🎯 Como o projeto cobre a matriz de avaliação
+
+| Critério (peso) | Onde o projeto entrega |
+|---|---|
+| **Domínio Técnico e Integração (40%)** | Integra 3 grandes tópicos de AI for RPA (REST API + Arquivos/DB + Agendamento) num fluxo automatizado funcional. |
+| **Arquitetura de Fluxo e Engenharia (25%)** | Padrão MVC + `Repository`, `FastAPI` (`api.py`), tratamento de exceções/retry na API da NASA, testes com `pytest` e um **log de auditoria** (`auditoria.py`) que dá rastreabilidade ao robô. |
+| **Inteligência de Dados e IA (20%)** | `classificador.py` — pontuação de risco 0–100 + **detecção de anomalias** estatística com pandas. |
+| **Entrega de Artefatos e Outputs (15%)** | Planilha Excel/CSV, banco SQLite, API REST em JSON e **dashboard Streamlit** (carga de dados estruturados para o front-end). |
 
 ---
 
@@ -43,7 +51,7 @@ estatística com pandas).
 ```
 SpaceWatch-RPA/
 ├── main.py                 # roda o robô uma vez
-├── dashboard.py            # TÓPICO 4: front end (Streamlit)
+├── dashboard.py            # front end / output (Streamlit)
 ├── pyproject.toml          # dependências (Poetry)
 ├── requirements.txt        # dependências (caminho via pip)
 ├── spacewatch/
@@ -54,7 +62,7 @@ SpaceWatch-RPA/
 │   ├── relatorio.py        # Arquivos: gera planilha Excel/CSV com pandas
 │   ├── rpa_bot.py          # O robô: integra todo o fluxo
 │   ├── agendamento.py      # TÓPICO 3: agendamento (cron / schedule)
-│   ├── auditoria.py        # TÓPICO 5: governança (histórico de uso)
+│   ├── auditoria.py        # robustez: histórico de uso (rastreabilidade)
 │   └── api.py              # CONTROLLER: API REST com FastAPI (MVC)
 └── tests/
     ├── test_classificador.py   # testes da IA/análise (pytest)
@@ -117,7 +125,7 @@ Expressão cron equivalente (Linux/servidor): `0 8 * * *`
 
 ---
 
-## 📊 Dashboard visual (Front End — Disciplina 04)
+## 📊 Dashboard visual (output / front-end)
 
 ```bash
 poetry run streamlit run dashboard.py
@@ -125,11 +133,12 @@ poetry run streamlit run dashboard.py
 
 Abre no navegador uma interface com filtros, indicadores e gráficos
 interativos (asteroides por nível de risco, distância x tamanho) e um
-botão para disparar o robô na hora.
+botão para disparar o robô na hora. É a **carga de dados estruturados
+para o front-end** que a rubrica de "Entrega de Artefatos" valoriza.
 
 ---
 
-## 🔒 Governança e rastreabilidade (Disciplina 09)
+## 🔒 Rastreabilidade / histórico de uso
 
 Para usar o painel, a pessoa precisa **se identificar com o nome**. A partir
 daí, todo evento relevante é gravado num **histórico auditável** (tabela
@@ -140,8 +149,8 @@ daí, todo evento relevante é gravado num **histórico auditável** (tabela
 - com **carimbo de data e hora** de cada ação.
 
 Basta clicar em **"📜 Ver histórico de uso"** no dashboard para ver tudo.
-Isso dá ao projeto a camada de **governança/rastreabilidade** que a
-Disciplina 09 (a integradora da GS) exige.
+É uma boa prática de RPA: o robô fica **auditável** e o fluxo, rastreável
+(reforça o critério de "Arquitetura de Fluxo e Engenharia de Software").
 
 ---
 
@@ -179,5 +188,6 @@ ele tenta novamente (retry automático) e registra tudo via `logging`.
 1. Mostrar o problema (monitorar asteroides manualmente é inviável).
 2. Rodar `python main.py` ao vivo e mostrar a planilha sendo gerada.
 3. Abrir o `/docs` do FastAPI e consultar os asteroides de risco CRÍTICO.
-4. Explicar onde estão os 3 tópicos integrados (tabela acima).
-5. Mostrar o agendamento rodando sozinho.
+4. Explicar os 3 grandes tópicos de AI for RPA integrados (tabela acima).
+5. Mostrar o dashboard e o histórico de uso (rastreabilidade do robô).
+6. Mostrar o agendamento rodando sozinho.
