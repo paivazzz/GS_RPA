@@ -40,8 +40,10 @@ st.sidebar.success(f"Conectado como: {usuario}")
 # ----- Navegação entre páginas -----
 navegacao = st.navigation(
     [
-        st.Page(painel.exibir, title="Painel", icon="🛰️", default=True),
-        st.Page(historico.exibir, title="Histórico de uso", icon="📜"),
+        st.Page(painel.exibir, title="Painel", icon="🛰️",
+                url_path="painel", default=True),
+        st.Page(historico.exibir, title="Histórico de uso", icon="📜",
+                url_path="historico"),
     ]
 )
 navegacao.run()
