@@ -41,7 +41,13 @@ def exibir():
             f"{dias} dia(s) • {resumo['total']} asteroides coletados • "
             f"{resumo['novos']} novos",
         )
-        st.sidebar.success(f"{resumo['total']} asteroides coletados!")
+        if resumo["total"] == 0:
+            st.sidebar.warning(
+                "A NASA não retornou dados agora (pode ser o limite da "
+                "DEMO_KEY). Tente de novo em instantes."
+            )
+        else:
+            st.sidebar.success(f"{resumo['total']} asteroides coletados!")
 
     # ----- Carrega os dados já salvos -----
     df = _carregar_dados()

@@ -50,7 +50,16 @@ def executar_monitoramento(dias: int = 1, limpar_historico: bool = False) -> dic
         # Graças ao tratamento de erros, chegamos aqui sem quebrar mesmo
         # que a NASA falhe. Encerramos com um resumo "vazio".
         logger.warning("Nenhum dado retornado pela NASA. Encerrando sem alterações.")
-        return {"total": 0, "criticos": 0, "altos": 0, "anomalias": 0, "arquivo_excel": None}
+        # Mesmo formato do retorno de sucesso (todas as chaves), para quem
+        # consome o resumo (dashboard/API) não quebrar quando a NASA falha.
+        return {
+            "total": 0,
+            "novos": 0,
+            "criticos": 0,
+            "altos": 0,
+            "anomalias": 0,
+            "arquivo_excel": None,
+        }
 
     # 3) IA/análise: converte e classifica cada asteroide por risco...
     asteroides = [classificar(item) for item in brutos]

@@ -24,12 +24,10 @@ from .rpa_bot import executar_monitoramento
 
 
 # (A) Expressões cron de referência (formato: minuto hora dia mes dia_semana)
-#     - todo dia às 08:00:        0 8 * * *
 #     - de segunda a sexta, 18h:  0 18 * * 1-5
 #     - a cada 6 horas:           0 */6 * * *
+# A que o robô usa de fato é a diária às 08:00:
 CRON_DIARIO_8H = "0 8 * * *"
-CRON_SEG_A_SEX_18H = "0 18 * * 1-5"
-CRON_A_CADA_6H = "0 */6 * * *"
 
 
 def iniciar_agendador():
