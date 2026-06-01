@@ -8,6 +8,14 @@ ele entra na API da NASA, pega os asteroides do dia, calcula o quão perigoso é
 tudo num banco de dados e ainda gera uma planilha pronta para olhar. Ninguém precisa clicar
 em nada.
 
+## Tópicos de AI for RPA integrados
+
+O enunciado pede combinar pelo menos 2 grandes tópicos da disciplina. O projeto integra 3:
+
+- **Consumo de REST API** — `spacewatch/nasa_client.py` busca os dados na API da NASA.
+- **Arquivos & Database** — `spacewatch/repository.py` salva no SQLite e `relatorio.py` gera a planilha.
+- **Execução & Agendamento** — `spacewatch/agendamento.py` faz o robô rodar sozinho todo dia.
+
 ## Como instalar e rodar
 
 Abra o terminal **dentro da pasta `SpaceWatch-RPA`** e rode:
