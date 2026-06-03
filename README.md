@@ -1,79 +1,59 @@
 # SpaceWatch RPA — Monitoramento de Asteroides com Dados da NASA
 
-Projeto da disciplina **AI for Robotic Process Automation** — Global Solution 2026.1 (FIAP).
+Robô de automação (RPA) da disciplina **AI for Robotic Process Automation** — Global Solution 2026.1 
 
-A ideia é simples: todo dia surgem dados sobre asteroides que passam perto da Terra, e
-acompanhar isso na mão seria trabalhoso. Então criei um robô que faz esse trabalho sozinho —
-ele entra na API da NASA, pega os asteroides do dia, calcula o quão perigoso é cada um, guarda
-tudo num banco de dados e ainda gera uma planilha pronta para olhar. Ninguém precisa clicar
-em nada.
+Todo dia a NASA publica dados dos asteroides que passam perto da Terra. Acompanhar isso na mão é
+trabalhoso e repetitivo — o tipo de tarefa que um robô resolve melhor. O SpaceWatch faz o ciclo
+inteiro sozinho: busca os asteroides do dia na API da NASA, calcula o risco de cada um, guarda no
+banco, gera uma planilha e ainda agrupa os asteroides por perfil com um modelo de IA.
 
-## Tópicos de AI for RPA integrados
+Integra 3 tópicos da disciplina: **REST API** (`nasa_client.py`), **Arquivos & Database**
+(`repository.py`) e **Execução & Agendamento** (`agendamento.py`).
 
-O enunciado pede combinar pelo menos 2 grandes tópicos da disciplina. O projeto integra 3:
+## O fluxo, em ordem
 
-- **Consumo de REST API** — `spacewatch/nasa_client.py` busca os dados na API da NASA.
-- **Arquivos & Database** — `spacewatch/repository.py` salva no SQLite e `relatorio.py` gera a planilha.
-- **Execução & Agendamento** — `spacewatch/agendamento.py` faz o robô rodar sozinho todo dia.
+1. **Coleta** — consome a API da NASA (NeoWs) e baixa os asteroides do período.
+2. **Análise** — pontua o risco de cada um (0–100), classifica em BAIXO/MÉDIO/ALTO/CRÍTICO e marca anomalias estatísticas.
+3. **Armazenamento** — salva num banco SQLite, acumulando histórico sem duplicar.
+4. **Saída** — gera a planilha `relatorio_asteroides.xlsx` e mostra no terminal os 3 mais perigosos.
+5. **Extras** — API REST para consulta, agendamento diário, dashboard web e agrupamento por K-Means.
 
-## Como instalar e rodar
+## Como rodar
 
-Abra o terminal **dentro da pasta `SpaceWatch-RPA`** e rode:
+Tudo a partir da pasta `SpaceWatch-RPA`. Instale as dependências uma vez:
 
 ```bash
 pip install -r requirements.txt
+```
+
+**Robô (uma execução):**
+
+```bash
 python main.py
 ```
 
-Quando você roda, o robô busca os asteroides do dia, calcula o risco de cada um, salva tudo no
-banco `spacewatch.db`, gera a planilha `relatorio_asteroides.xlsx` e mostra no terminal os 3
-mais perigosos.
-
-## API REST (opcional)
-
-```bash
-python -m uvicorn spacewatch.api:app --reload
-```
-
-Depois é só abrir `http://127.0.0.1:8000/docs` no navegador. De lá dá para:
-
-- `GET /asteroides` — ver todos, do mais perigoso para o menos
-- `GET /asteroides/CRITICO` — filtrar só por um nível de risco
-- `POST /executar` — disparar o robô na hora
-
-## Agendamento
-
-```bash
-python -m spacewatch.agendamento
-```
-
-Com isso o robô passa a rodar sozinho todo dia às 08:00. No Linux, o mesmo efeito sairia com o
-cron `0 8 * * *`.
-
-## Dashboard
+**Dashboard web** — três páginas: Painel, Agrupamento (IA) e Histórico de uso:
 
 ```bash
 python -m streamlit run dashboard.py
 ```
 
-Abre um app com três páginas: o **Painel**, com filtros, números e gráficos dos asteroides;
-o **Agrupamento (IA)**, que usa K-Means (scikit-learn) para juntar os asteroides em perfis
-parecidos de risco/tamanho/distância; e o **Histórico de uso**, que mostra quem mexeu no
-sistema. Antes de entrar, você digita seu nome na lateral — assim tudo o que cada pessoa faz
-fica registrado, dá para saber quem fez o quê.
+**API REST** — abre em `http://127.0.0.1:8000/docs`:
 
-## Testes
+```bash
+python -m uvicorn spacewatch.api:app --reload
+```
+
+Rotas: `GET /asteroides`, `GET /asteroides/{nivel}` (ex.: `CRITICO`), `POST /executar`.
+
+**Agendamento** — passa a rodar sozinho todo dia às 08:00 (equivale ao cron `0 8 * * *`):
+
+```bash
+python -m spacewatch.agendamento
+```
+
+**Testes:**
 
 ```bash
 python -m pytest
 ```
-
-Os testes conferem se o cálculo de risco, a detecção de anomalias, o banco de dados, a geração
-da planilha, o histórico de uso e o robô como um todo estão funcionando direito.
-
-## Chave da NASA
-
-Por padrão o projeto usa a chave pública `DEMO_KEY`, que já funciona, mas tem limite baixo de
-uso. Se quiser usar bastante, é só pegar uma chave grátis em https://api.nasa.gov e colocar na
-variável de ambiente `NASA_API_KEY`. E não se preocupe: se a NASA cair ou travar, o robô tenta
-de novo sozinho e não quebra.
