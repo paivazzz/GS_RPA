@@ -8,6 +8,7 @@ uvicorn>=0.29.0       # servidor que roda o FastAPI
 schedule>=1.2.1       # execução automática no Windows (Tópico 3 - Agendamento)
 streamlit>=1.33.0     # dashboard front-end (output / visualização)
 pydantic>=2.0.0       # validação dos modelos (camada Model do MVC)
+scikit-learn>=1.4.0   # K-Means para agrupar asteroides por perfil (IA / análise)
 
 # Desenvolvimento / testes
 pytest>=8.0.0         # testes automatizados (qualidade de código)

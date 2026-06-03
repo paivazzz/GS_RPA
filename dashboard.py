@@ -2,7 +2,7 @@
 
 import streamlit as st
 
-from paginas import historico, painel
+from paginas import agrupamento, historico, painel
 
 st.set_page_config(page_title="SpaceWatch RPA", page_icon="🛰️", layout="wide")
 
@@ -24,6 +24,8 @@ navegacao = st.navigation(
     [
         st.Page(painel.exibir, title="Painel", icon="🛰️",
                 url_path="painel", default=True),
+        st.Page(agrupamento.exibir, title="Agrupamento (IA)", icon="🧩",
+                url_path="agrupamento"),
         st.Page(historico.exibir, title="Histórico de uso", icon="📜",
                 url_path="historico"),
     ]
