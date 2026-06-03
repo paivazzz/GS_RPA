@@ -1,17 +1,4 @@
-"""
-Classificador de risco — a camada de "IA / análise de dados" do projeto.
-
-Aqui transformamos os dados brutos da NASA em uma DECISÃO útil:
-o quão perigoso é cada asteroide?
-
-Duas técnicas:
-1) PONTUAÇÃO ponderada (0 a 100): soma fatores de risco (perigo oficial,
-   tamanho, distância e velocidade) → vira um nível BAIXO/MEDIO/ALTO/CRITICO.
-2) DETECÇÃO DE ANOMALIAS (estatística com pandas): marca os asteroides
-   cujo risco é estatisticamente atípico dentro do lote analisado
-   (acima da média + 1 desvio-padrão). Isso é um algoritmo de análise
-   de dados, não apenas uma regra fixa.
-"""
+"""Classifica o risco de cada asteroide (0-100) e detecta anomalias estatísticas."""
 
 import logging
 

@@ -1,9 +1,4 @@
-"""
-Testes automatizados do classificador de risco (pytest).
-
-Garante que a lógica de pontuação, classificação por nível e detecção
-de anomalias funcione como esperado. Rodar com:  poetry run pytest
-"""
+"""Testes do classificador de risco."""
 
 from spacewatch.classificador import (
     _calcular_pontuacao,

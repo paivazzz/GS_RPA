@@ -1,13 +1,4 @@
-"""
-Geração de relatório em Excel/CSV usando pandas.
-
-Complementa o TÓPICO de Arquivos: além do banco de dados (SQLite),
-o robô gera uma PLANILHA (.xlsx) que qualquer pessoa abre no Excel,
-exatamente como o slide "Manipulando Arquivos Excel com Pandas".
-
-Isso é o "entregável" visual do RPA: um relatório pronto para a
-tomada de decisão.
-"""
+"""Gera o relatório dos asteroides em Excel/CSV com pandas."""
 
 import logging
 

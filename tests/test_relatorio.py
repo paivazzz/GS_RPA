@@ -1,6 +1,4 @@
-"""
-Testes da geração de arquivos (Excel/CSV) com pandas, em pasta temporária.
-"""
+"""Testes da geração de relatório (Excel/CSV)."""
 
 import pandas as pd
 

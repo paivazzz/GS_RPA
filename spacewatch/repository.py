@@ -1,22 +1,4 @@
-"""
-TÓPICO 2 do semestre: Arquivos & Database (SQLite).
-
-Camada MODEL/Repository do MVC. Esta classe é praticamente igual à
-"classe Repository" que o professor mostrou no slide de Restful APIs:
-ela usa o módulo sqlite3 (que já vem no Python) para fazer o CRUD
-(Create, Read, Update, Delete) num banco salvo em arquivo (.db).
-
-Usamos placeholders (?) nas queries para evitar SQL Injection.
-
-MELHORIA 1: a tabela tem uma restrição UNIQUE(neo_id, data_aproximacao)
-e a inserção usa INSERT OR IGNORE. Assim o robô ACUMULA HISTÓRICO a
-cada execução, sem criar registros duplicados do mesmo asteroide.
-
-MELHORIA 2: cada operação abre e FECHA sua própria conexão (via context
-manager `with`). Isso evita vazamento de conexões e o erro de "thread"
-do SQLite quando o Repository é usado pelo FastAPI/Streamlit (que rodam
-em threads diferentes). É a forma correta de lidar com sqlite3.
-"""
+"""Camada de banco de dados (SQLite) com o padrão Repository."""
 
 import logging
 import sqlite3
@@ -26,8 +8,6 @@ from .models import Asteroide
 
 logger = logging.getLogger(__name__)
 
-# Colunas da tabela, na ordem em que são lidas/escritas. Centralizar aqui
-# evita repetir a lista de nomes em vários lugares (relatorio, api, dashboard).
 COLUNAS = [
     "id",
     "neo_id",
@@ -55,11 +35,7 @@ class Repository:
 
     @contextmanager
     def _conectar(self):
-        """Abre uma conexão, entrega para o bloco `with` e SEMPRE fecha no fim.
 
-        Usar um context manager garante que a conexão seja encerrada mesmo
-        que ocorra um erro no meio da operação (sem vazar conexões).
-        """
         conexao = sqlite3.connect(self.database_name)
         try:
             yield conexao
@@ -69,9 +45,6 @@ class Repository:
 
     def criar_tabela(self):
         """Cria a tabela de asteroides caso ela ainda não exista.
-
-        A restrição UNIQUE evita que o mesmo asteroide, na mesma data de
-        aproximação, seja inserido duas vezes (permite manter histórico).
         """
         sql_create_table = """
             CREATE TABLE IF NOT EXISTS asteroides (
@@ -94,12 +67,8 @@ class Repository:
         with self._conectar() as conexao:
             conexao.execute(sql_create_table)
 
-    # ---------- CREATE ----------
     def inserir_asteroide(self, asteroide: Asteroide) -> bool:
         """Insere um asteroide. Devolve True se inseriu, False se já existia.
-
-        Usa INSERT OR IGNORE: se o par (neo_id, data) já existir, o banco
-        simplesmente ignora, mantendo o histórico sem duplicar.
         """
         sql_insert = """
             INSERT OR IGNORE INTO asteroides (
@@ -129,7 +98,6 @@ class Repository:
             # rowcount = 1 quando inseriu de fato; 0 quando ignorou (já existia).
             return cursor.rowcount == 1
 
-    # ---------- READ ----------
     def selecionar_asteroides(self) -> list:
         """Retorna todos os asteroides cadastrados, do maior risco para o menor."""
         sql_select = "SELECT * FROM asteroides ORDER BY pontuacao_risco DESC"
@@ -145,7 +113,6 @@ class Repository:
         with self._conectar() as conexao:
             return conexao.execute(sql_select, (nivel,)).fetchall()
 
-    # ---------- DELETE ----------
     def limpar_tabela(self):
         """Apaga todos os registros (use só se quiser zerar o histórico)."""
         with self._conectar() as conexao:

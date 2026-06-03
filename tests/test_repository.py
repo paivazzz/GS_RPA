@@ -1,6 +1,4 @@
-"""
-Testes do Repository (CRUD em SQLite), usando banco temporário (tmp_path).
-"""
+"""Testes do Repository (CRUD em SQLite)."""
 
 from spacewatch.models import Asteroide
 from spacewatch.repository import COLUNAS, Repository

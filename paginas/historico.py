@@ -1,10 +1,4 @@
-"""
-Página HISTÓRICO DE USO — rastreabilidade / auditoria.
-
-Mostra, numa página dedicada, tudo o que cada pessoa fez no sistema:
-quem executou o robô, quem consultou e quando. Reforça o critério
-"Arquitetura de Fluxo e Engenharia de Software" (robô auditável).
-"""
+"""Página de histórico de uso (auditoria / rastreabilidade)."""
 
 import pandas as pd
 import streamlit as st
@@ -23,19 +17,16 @@ def exibir():
 
     hist = pd.DataFrame(eventos, columns=COLUNAS_AUDITORIA)
 
-    # ----- Filtro por usuário -----
     usuarios = ["TODOS"] + sorted(hist["usuario"].unique().tolist())
     escolhido = st.sidebar.selectbox("Filtrar por usuário", usuarios)
     if escolhido != "TODOS":
         hist = hist[hist["usuario"] == escolhido]
 
-    # ----- Indicadores -----
     col1, col2, col3 = st.columns(3)
     col1.metric("Eventos registrados", len(hist))
     col2.metric("Execuções do robô", int((hist["acao"] == "Executou o robô").sum()))
     col3.metric("Consultas", int((hist["acao"] == "Consultou asteroides").sum()))
 
-    # ----- Tabela do histórico (mais recente primeiro) -----
     st.subheader("Registros")
     st.dataframe(
         hist.rename(

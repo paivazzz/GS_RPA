@@ -1,10 +1,4 @@
-"""
-Testes do robô (orquestração do fluxo), com a NASA SIMULADA (monkeypatch).
-
-Cobrem os dois caminhos críticos:
-- NASA sem dados  -> resumo coerente, sem quebrar (foi o bug do dashboard);
-- NASA com dados  -> classifica, salva, gera planilha e não duplica.
-"""
+"""Testes do robô (orquestração do fluxo), com a NASA simulada."""
 
 from spacewatch import rpa_bot
 

@@ -1,19 +1,4 @@
-"""
-O ROBÔ (RPA) propriamente dito.
-
-Aqui orquestramos todo o fluxo automatizado, juntando os tópicos:
-    1. REST API  -> busca dados na NASA (nasa_client)
-    2. Database  -> salva no SQLite (repository)
-    + Arquivos   -> gera planilha Excel (relatorio)
-    + IA/análise -> classifica risco e detecta anomalias (classificador)
-
-Esta é a "integração de fluxos digitais" que o enunciado da GS pede:
-um processo que antes seria manual (entrar no site da NASA, copiar
-dados, montar planilha) feito de forma 100% automática.
-
-MELHORIA: por padrão o robô ACUMULA histórico (não apaga o banco).
-Use limpar_historico=True se quiser zerar antes de coletar.
-"""
+"""Orquestra o fluxo do robô: NASA → classificação → banco → planilha."""
 
 import logging
 from datetime import date, timedelta
@@ -37,21 +22,16 @@ def executar_monitoramento(dias: int = 1, limpar_historico: bool = False) -> dic
     """
     logger.info("=== SpaceWatch RPA: iniciando monitoramento ===")
 
-    # 1) Define o intervalo de datas (hoje até 'dias' à frente).
     hoje = date.today()
     fim = hoje + timedelta(days=dias)
     data_inicio = hoje.strftime("%Y-%m-%d")
     data_fim = fim.strftime("%Y-%m-%d")
 
-    # 2) TÓPICO 1 - REST API: busca os dados brutos na NASA.
     brutos = nasa_client.buscar_asteroides(data_inicio, data_fim)
 
     if not brutos:
-        # Graças ao tratamento de erros, chegamos aqui sem quebrar mesmo
-        # que a NASA falhe. Encerramos com um resumo "vazio".
         logger.warning("Nenhum dado retornado pela NASA. Encerrando sem alterações.")
-        # Mesmo formato do retorno de sucesso (todas as chaves), para quem
-        # consome o resumo (dashboard/API) não quebrar quando a NASA falha.
+        # Mesmo formato do retorno de sucesso para o dashboard/API não quebrar.
         return {
             "total": 0,
             "novos": 0,
@@ -61,12 +41,9 @@ def executar_monitoramento(dias: int = 1, limpar_historico: bool = False) -> dic
             "arquivo_excel": None,
         }
 
-    # 3) IA/análise: converte e classifica cada asteroide por risco...
     asteroides = [classificar(item) for item in brutos]
-    # ...e marca os estatisticamente atípicos (detecção de anomalias).
     detectar_anomalias(asteroides)
 
-    # 4) TÓPICO 2 - Database: salva no SQLite (acumulando histórico).
     banco = Repository()
     if limpar_historico:
         banco.limpar_tabela()
@@ -78,11 +55,9 @@ def executar_monitoramento(dias: int = 1, limpar_historico: bool = False) -> dic
     logger.info("%d novos asteroides inseridos (%d já existiam no histórico).",
                 novos, len(asteroides) - novos)
 
-    # 5) Arquivos: gera a planilha Excel a partir do banco.
     linhas = banco.selecionar_asteroides()
     caminho_excel = relatorio.gerar_excel(linhas)
 
-    # 6) Monta um resumo e imprime um quadro bonito para o vídeo/demonstração.
     criticos = [a for a in asteroides if a.nivel_risco == "CRITICO"]
     altos = [a for a in asteroides if a.nivel_risco == "ALTO"]
     anomalias = [a for a in asteroides if a.anomalia]
@@ -115,5 +90,4 @@ def executar_monitoramento(dias: int = 1, limpar_historico: bool = False) -> dic
 
 
 if __name__ == "__main__":
-    # Permite rodar o robô direto: python -m spacewatch.rpa_bot
     executar_monitoramento(dias=1)

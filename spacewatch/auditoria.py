@@ -1,17 +1,4 @@
-"""
-RASTREABILIDADE / HISTÓRICO DE USO do robô.
-
-Um robô de RPA bem-feito é AUDITÁVEL: precisa registrar quem o acionou e
-o que cada pessoa consultou. Toda ação relevante feita no dashboard fica
-registrada aqui: QUEM fez, O QUE fez, DETALHE e QUANDO. Em um cenário real
-(monitoramento de risco de asteroides) isso é essencial para saber quem
-disparou cada análise. Reforça o critério "Arquitetura de Fluxo e
-Engenharia de Software" da avaliação de AI for RPA.
-
-Segue o mesmo padrão Repository do resto do projeto (sqlite3 + context
-manager que abre/commita/fecha a conexão), gravando na mesma base
-`spacewatch.db`, em uma tabela separada `auditoria`.
-"""
+"""Registro de auditoria / histórico de uso: quem fez o quê e quando."""
 
 import logging
 import sqlite3
@@ -20,7 +7,6 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-# Colunas da tabela de auditoria, na ordem em que o banco devolve as linhas.
 COLUNAS_AUDITORIA = ["id", "usuario", "acao", "detalhe", "data_hora"]
 
 

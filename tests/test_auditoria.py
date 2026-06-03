@@ -1,8 +1,4 @@
-"""
-Testes da camada de auditoria/governança (pytest).
-
-Usa um banco temporário (tmp_path) para não tocar no spacewatch.db real.
-"""
+"""Testes da auditoria / histórico de uso."""
 
 from spacewatch.auditoria import COLUNAS_AUDITORIA, Auditoria
 

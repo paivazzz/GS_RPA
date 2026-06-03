@@ -1,10 +1,4 @@
-"""
-Camada MODEL (do padrão MVC visto em aula).
-
-Aqui definimos a estrutura dos dados usando Pydantic (BaseModel),
-exatamente como o professor mostrou no slide "Estrutura MVC - Modelo".
-O Pydantic valida automaticamente os tipos quando criamos o objeto.
-"""
+"""Modelos de dados (Pydantic) do projeto."""
 
 from typing import Optional
 
@@ -18,17 +12,17 @@ class Asteroide(BaseModel):
     formato, o Pydantic acusa o erro na hora (validação robusta).
     """
 
-    neo_id: str                      # identificador único do asteroide na NASA
-    nome: str                        # nome/designação (ex.: "(2024 AB1)")
-    data_aproximacao: str            # data da maior aproximação (AAAA-MM-DD)
-    diametro_min_m: float            # diâmetro estimado mínimo, em metros
-    diametro_max_m: float            # diâmetro estimado máximo, em metros
-    velocidade_kmh: float            # velocidade relativa, em km/h
-    distancia_km: float              # distância da Terra na aproximação, em km
-    distancia_lunar: float           # distância em "distâncias lunares" (1 = Terra-Lua)
-    potencialmente_perigoso: bool    # flag oficial da NASA (is_potentially_hazardous)
+    neo_id: str
+    nome: str
+    data_aproximacao: str
+    diametro_min_m: float
+    diametro_max_m: float
+    velocidade_kmh: float
+    distancia_km: float
+    distancia_lunar: float            # 1 = distância Terra-Lua
+    potencialmente_perigoso: bool     # flag oficial da NASA
 
-    # Campos preenchidos pela nossa "IA"/análise:
+    # Campos preenchidos pela classificação:
     pontuacao_risco: Optional[int] = None   # 0 a 100
     nivel_risco: Optional[str] = None        # BAIXO / MEDIO / ALTO / CRITICO
-    anomalia: Optional[bool] = None          # risco estatisticamente atípico no lote
+    anomalia: Optional[bool] = None

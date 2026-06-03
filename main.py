@@ -1,15 +1,4 @@
-"""
-Ponto de entrada do projeto SpaceWatch RPA.
-
-Rode este arquivo para executar o robô UMA vez:
-    poetry run python main.py
-
-Para rodar de forma AGENDADA (automática), use:
-    poetry run python -m spacewatch.agendamento
-
-Para subir a API REST:
-    poetry run uvicorn spacewatch.api:app --reload
-"""
+"""Ponto de entrada: executa o robô SpaceWatch RPA uma vez."""
 
 from spacewatch.rpa_bot import executar_monitoramento
 

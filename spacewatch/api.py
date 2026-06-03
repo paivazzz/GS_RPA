@@ -1,15 +1,4 @@
-"""
-Camada CONTROLLER do MVC, usando FastAPI (slide "Restful APIs").
-
-Depois que o robô coletou e salvou os dados no SQLite, esta API REST
-deixa qualquer pessoa (ou um dashboard) consultar os asteroides pelo
-navegador. É o mesmo padrão de Controllers que o professor mostrou:
-o FastAPI conversa com o Repository (Model) e devolve JSON.
-
-Como rodar:
-    poetry run uvicorn spacewatch.api:app --reload
-Depois abra:  http://127.0.0.1:8000/docs
-"""
+"""API REST (FastAPI) para consultar os asteroides e disparar o robô."""
 
 import uvicorn
 from fastapi import FastAPI
