@@ -56,9 +56,11 @@ cron `0 8 * * *`.
 python -m streamlit run dashboard.py
 ```
 
-Abre um app com duas páginas: o **Painel**, com filtros, números e gráficos dos asteroides, e
-o **Histórico de uso**, que mostra quem mexeu no sistema. Antes de entrar, você digita seu nome
-na lateral — assim tudo o que cada pessoa faz fica registrado, dá para saber quem fez o quê.
+Abre um app com três páginas: o **Painel**, com filtros, números e gráficos dos asteroides;
+o **Agrupamento (IA)**, que usa K-Means (scikit-learn) para juntar os asteroides em perfis
+parecidos de risco/tamanho/distância; e o **Histórico de uso**, que mostra quem mexeu no
+sistema. Antes de entrar, você digita seu nome na lateral — assim tudo o que cada pessoa faz
+fica registrado, dá para saber quem fez o quê.
 
 ## Testes
 
