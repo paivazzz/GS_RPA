@@ -10,6 +10,12 @@ banco, gera uma planilha e ainda agrupa os asteroides por perfil com um modelo d
 Integra 3 tópicos da disciplina: **REST API** (`nasa_client.py`), **Arquivos & Database**
 (`repository.py`) e **Execução & Agendamento** (`agendamento.py`).
 
+## Integrantes: 
+
+Bruno Lanchariche Fitipaldi Lopes - RM 564129
+Filipe Melo da Silva - RM 564571
+Rafael de Paiva Ramos - RM 563978
+
 ## O fluxo, em ordem
 
 1. **Coleta** — consome a API da NASA (NeoWs) e baixa os asteroides do período.
